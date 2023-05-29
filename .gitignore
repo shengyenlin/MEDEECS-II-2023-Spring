@@ -2,4 +2,3 @@ data/*
 data_keras/*
 data_split/*
 data.zip
-*.xlsx
