@@ -4,3 +4,7 @@ gdown --fuzzy \
 
 mkdir data
 unzip data.zip -d data
+
+# gdown --fuzzy \
+#     -O label_df.xlsx \
+#     https://docs.google.com/spreadsheets/d/19vkvtKDPJhk-6qDBhfO_AcRuziucseM3XOYjMX4v0bA/edit?usp=share_link
