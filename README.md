@@ -11,7 +11,7 @@ pip3 install gdown
 pip3 install tensorflow-gpu==1.12.3 keras==2.2.4
 ```
 
-## Get and process datas
+## Get and process data
 ```bash
 bash get_data.bash  # get data drop google drive
 python3 cut_img.py # cut images into top and down images

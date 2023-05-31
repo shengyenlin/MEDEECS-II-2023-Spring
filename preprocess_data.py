@@ -26,6 +26,22 @@ def split_os_od(df):
     df_od = df[df['Filename'].str.contains('OD')]
     return df_os, df_od
 
+
+def filter_valid_file(df, origin_dir):
+    valid_file_names = []
+    
+    for _, row in df.iterrows():
+        image_path = os.path.join(origin_dir, row['Patient ID'], row['Filename'])
+        
+        if not os.path.exists(image_path):
+            continue  # Skip if the image_path doesn't exist
+        
+        valid_file_names.append(row['Filename'])
+    
+    filtered_df = df[df['Filename'].isin(valid_file_names)]
+
+    return filtered_df
+
 def copy_image(df, origin_dir, destin_dir):
     for _, row in df.iterrows():
         image_path = os.path.join(origin_dir, row['Patient ID'], row['Filename'])
@@ -144,6 +160,9 @@ def preprocess_patient_data(df, patient_ids):
     # remove HQC labels that are -1 (means od and os == 0)
     df = df[df["HCQ_label"] != -1]
 
+    # remove os od column
+    df = df.drop(columns=["od", "os"])
+
     # fill EZ-fovea, EZ-parafovea, EZ-perifovea, EZ-pericentral, 
     # RPE-fovea, RPE-parafovea, RPE-perifovea, RPE-pericentral
     # to 0
@@ -169,7 +188,8 @@ def split_data(data, train_ratio, valid_ratio, test_ratio, random_state=42):
     remaining_ratio = valid_ratio + test_ratio
     train_data, remaining_data = train_test_split(
         data, test_size=remaining_ratio, 
-        random_state=random_state
+        random_state=random_state,
+        stratify=data['HCQ_label']
         )
     
     # Calculate the remaining ratio as a fraction of the total remaining ratio
@@ -178,7 +198,8 @@ def split_data(data, train_ratio, valid_ratio, test_ratio, random_state=42):
     # Split the remaining data into validation and test sets
     valid_data, test_data = train_test_split(
         remaining_data, test_size = relative_frac_test, 
-        random_state=random_state
+        random_state=random_state,
+        stratify=remaining_data['HCQ_label']
         )
     
     return train_data, valid_data, test_data
@@ -194,9 +215,7 @@ def main():
     label_df, unique_patient_ids = preprocess_label_data(label_df)
     patient_data_df = preprocess_patient_data(patient_data_df, unique_patient_ids)
 
-    # print(patient_data_df.head())
-    # exit()
-    # print(patient_data_df[patient_data_df["Patient ID"] == "P215350000002"])
+    patient_data_df = filter_valid_file(patient_data_df, args.original_img_dir)
 
     # cut to train valid test for keras package 
     train_ds, valid_ds, test_ds = \
@@ -206,24 +225,27 @@ def main():
         args.valid_ratio, 
         1-args.train_ratio-args.valid_ratio
         )
-
+    
+    os.makedirs(args.output_dir, exist_ok=True)
+    
     train_ds.to_csv(
-        os.path.join(args.output_dir, "train_os.csv"), 
+        os.path.join(args.output_dir, "train.csv"), 
         index=False
         )
     valid_ds.to_csv(
-        os.path.join(args.output_dir, "val_os.csv"), 
+        os.path.join(args.output_dir, "val.csv"), 
         index=False
         )
     test_ds.to_csv(
-        os.path.join(args.output_dir, "test_os.csv"), 
+        os.path.join(args.output_dir, "test.csv"), 
         index=False
         )
-    
+
     # Move files to the correct directory
     train_path = os.path.join(args.output_dir, "train")
     valid_path = os.path.join(args.output_dir, "val")
     test_path = os.path.join(args.output_dir, "test")
+    
     os.makedirs(train_path, exist_ok=True)
     os.makedirs(valid_path, exist_ok=True)
     os.makedirs(test_path, exist_ok=True)
@@ -231,6 +253,6 @@ def main():
     copy_image(train_ds, args.original_img_dir, train_path)
     copy_image(valid_ds, args.original_img_dir, valid_path)
     copy_image(test_ds, args.original_img_dir, test_path)
-    
+
 if __name__ == '__main__':
     main()
