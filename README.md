@@ -26,8 +26,8 @@ bash preprocess_data.bash # Preprocess to keras format
 
 ## Transfer learning
 
-1. keras - transfer learning的[tutorial](https://github.com/SharifAmit/OpticNet-71)
-2. 我們要用的model在[這裡](https://github.com/ayushdabra/retinal-oct-images-classification)
+1. keras - transfer learning的[tutorial](https://github.com/ayushdabra/retinal-oct-images-classification/blob/master/vgg16-for-retinal-oct-images-dataset.ipynb)
+2. 我們要用的model在[這裡](https://github.com/SharifAmit/OpticNet-71)
 3. 我們要做的就是把上面這個model的最後一層（又叫做head），換成一個binary classificatio的head，可以參考`train_example.py`，我已經把大部分的workflow都寫好了
 4. Transfer learning可以嘗試的不同實驗
     - 不鎖backbone (machine learning extract feature的部分)
