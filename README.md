@@ -1,6 +1,6 @@
 # Special Topic in innovative integration of medicine and EECS (II)
 
-The course aims to train students to solve pratical medical problems with artificial intelligence techniques. The course is still ongoing, and a project will be finished at the end of the course.
+This project aims to harness the power of deep learning to improve the diagnostic accuracy of hydroxychloroquine (HCQ) retinopathy through the analysis of retinal OCT B-scan images. Hydroxychloroquine, commonly used in the treatment of autoimmune diseases, can cause retinopathy as a serious side effect, which may lead to irreversible vision loss if not detected early. By employing a binary classification approach, this initiative seeks to develop a model that can predict the probability of HCQ retinopathy presence in patients. The input for this model consists of various OCT B-scan images of the retina, while the output is a quantified probability of the presence of HCQ retinopathy, providing a valuable tool for ophthalmologists to detect and mitigate this condition effectively.
 
 ## Set up environment
 
@@ -19,18 +19,17 @@ bash preprocess_data.bash # Preprocess to keras format
 ```
 
 ## Remark
-1. 在跑完上面的code之後，你會看到三個資料夾
-- `data`: 最原始的data，和google drive上面一樣
-- `data_split`: 每張圖片都被切分成top和down的image
-- `data_keras`: 裡面會有三個csv, 會含有是train, valid和test的patient name和label (column name 為 "HCQ_label")。裡面還會有三個subdirectories - train, valid, test - 是拿來給keras `flow_from_directory`這個function用的，使用說明請參考[這裡](https://github.com/ayushdabra/retinal-oct-images-classification/blob/master/vgg16-for-retinal-oct-images-dataset.ipynb)
+1. After running the code above, you will see three folders:
+data: The most original data, the same as on Google Drive.
+data_split: Each image has been split into a top and bottom image.
+data_keras: Contains three CSV files, which include the patient names and labels for train, valid, and test (column name is "HCQ_label"). There are also three subdirectories - train, valid, test - intended for use with the keras flow_from_directory function. For usage instructions, please refer to [here](https://github.com/ayushdabra/retinal-oct-images-classification/blob/master/vgg16-for-retinal-oct-images-dataset.ipynb)
 
 ## Transfer learning
 
-1. keras - transfer learning的[tutorial](https://github.com/ayushdabra/retinal-oct-images-classification/blob/master/vgg16-for-retinal-oct-images-dataset.ipynb)
-2. 我們要用的model在[這裡](https://github.com/SharifAmit/OpticNet-71)
-3. 我們要做的就是把上面這個model的最後一層（又叫做head），換成一個binary classificatio的head，可以參考`train_example.py`，我已經把大部分的workflow都寫好了
-4. Transfer learning可以嘗試的不同實驗
-    - 不鎖backbone (machine learning extract feature的部分)
-    - 鎖backbone
-    - backbone和head的learning rate大小不一樣
-
+1. Keras - transfer learning [tutorial](https://github.com/ayushdabra/retinal-oct-images-classification/blob/master/vgg16-for-retinal-oct-images-dataset.ipynb)
+2. The model we will use is [here](https://github.com/SharifAmit/OpticNet-71)
+3. What we need to do is to replace the last layer (also called the head) of the above model with a binary classification head. You can refer to train_example.py, where I have already written most of the workflow.
+4. Different experiments that can be attempted with transfer learning include:
+- Unfreezing the backbone (the part where machine learning extracts features).-
+- Freezing the backbone.
+- Varying the learning rates of the backbone and head.
