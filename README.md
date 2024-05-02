@@ -2,6 +2,8 @@
 
 This project aims to harness the power of deep learning to improve the diagnostic accuracy of hydroxychloroquine (HCQ) retinopathy through the analysis of retinal OCT B-scan images. Hydroxychloroquine, commonly used in the treatment of autoimmune diseases, can cause retinopathy as a serious side effect, which may lead to irreversible vision loss if not detected early. By employing a binary classification approach, this initiative seeks to develop a model that can predict the probability of HCQ retinopathy presence in patients. The input for this model consists of various OCT B-scan images of the retina, while the output is a quantified probability of the presence of HCQ retinopathy, providing a valuable tool for ophthalmologists to detect and mitigate this condition effectively.
 
+We used a pre-trained OpticNet (VGG16-CNN) and fine-tuned it on the dataset that we acquired from Nationa Taiwan University Hospital. We tried different freezing strategies and data augmentation methods and achieved 93.3% accuracy and 64.5 sensitivity on our internal dataset.
+
 ## Set up environment
 
 ```bash
